@@ -26,32 +26,11 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        520,
+        560,
         160
       ],
       "id": "8d5c444d-5e47-4930-9f94-cba468a89352",
       "name": "Window Buffer Memory"
-    },
-    {
-      "parameters": {
-        "operation": "delete",
-        "messageId": "={{ $('Edit Fields').item.json.email_id }}"
-      },
-      "type": "n8n-nodes-base.gmailTool",
-      "typeVersion": 2.1,
-      "position": [
-        700,
-        160
-      ],
-      "id": "b9dc0bd0-f155-4ec9-93d1-ba5fe9f6c589",
-      "name": "Gmail_delete",
-      "webhookId": "bcfd88e6-fc1a-41a9-b159-adf9c97f93b2",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "wTOIgm01vyADt47b",
-          "name": "Gmail account 2"
-        }
-      }
     },
     {
       "parameters": {},
@@ -67,6 +46,7 @@
     {
       "parameters": {
         "operation": "getAll",
+        "limit": 20,
         "filters": {
           "includeSpamTrash": true
         }
@@ -136,21 +116,42 @@
     },
     {
       "parameters": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "llama-guard-3-8b",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        360,
+        380,
         160
       ],
-      "id": "bef747cf-dd0a-49d8-9fc6-1cf3818e968c",
+      "id": "0c179bad-d9ed-4b49-b9ec-e876231bfe94",
       "name": "Groq Chat Model",
       "credentials": {
         "groqApi": {
           "id": "obBizBxc0YeyCRvz",
           "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Edit Fields').item.json.email_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        -60
+      ],
+      "id": "25e21ee2-a2cd-4dbc-ae4e-4b772b7139c7",
+      "name": "Gmail_delete",
+      "webhookId": "170955cc-6a15-4b0a-bce8-de78485b1129",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wTOIgm01vyADt47b",
+          "name": "Gmail account 2"
         }
       }
     }
@@ -163,17 +164,6 @@
           {
             "node": "AI Agent",
             "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gmail_delete": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -212,6 +202,17 @@
         ]
       ]
     },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail_delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Groq Chat Model": {
       "ai_languageModel": [
         [
@@ -228,7 +229,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "33eecda4-5ad0-4f91-9dc9-1201d611d1cd",
+  "versionId": "798d71e3-5d49-4cc9-b71a-d79ce707cf6c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "21b9420dd846f0fbd18362b61d7f712595fb4c489557710468d0c79403ebdf05"
