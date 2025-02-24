@@ -1,0 +1,238 @@
+{
+  "name": "email-analyse_bot",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Voici les données que tu dois analyser :\n\n{{ $json.snippet }}\n\n{{ $json.labels }}\n\n{{ $json.sender_mail }}\n\n{{ $json.subject }}",
+        "options": {
+          "systemMessage": " - Langue \n\nFrançais\n\n- Contexte\n\nTu es un agent expert en analyse de mail spécialisé dans le service gmail.\n\n - Objectifs\n\nAnalyse les spams puis supprime les si tu suggère que c'est réellement un spam. \n\n - Outils\n\nTu es connecter à plusieurs outils gmail :\n\n   - Gmail_delete pour supprimé les spams\n\n - Résultats attendus \n\nJe veux que le dossier spam soit bien nettoyer."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        440,
+        -60
+      ],
+      "id": "ba3d3ab6-a1f9-4035-b6eb-0af4f5a761f1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "5"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        520,
+        160
+      ],
+      "id": "8d5c444d-5e47-4930-9f94-cba468a89352",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Edit Fields').item.json.email_id }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        700,
+        160
+      ],
+      "id": "b9dc0bd0-f155-4ec9-93d1-ba5fe9f6c589",
+      "name": "Gmail_delete",
+      "webhookId": "bcfd88e6-fc1a-41a9-b159-adf9c97f93b2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wTOIgm01vyADt47b",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -60
+      ],
+      "id": "667394be-8daf-4831-a21f-c1840f26643f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "includeSpamTrash": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -60
+      ],
+      "id": "ae42bbc1-3c72-4d52-b2c2-55818579b048",
+      "name": "Gmail_get",
+      "webhookId": "d95fa440-03c1-4211-a893-08f7638f8906",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wTOIgm01vyADt47b",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e81f4846-9dc2-4a6d-8b48-c733d18d22cf",
+              "name": "snippet",
+              "value": "={{ $json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "7dd12371-5e17-4cfd-b1fc-ed204afa6cc8",
+              "name": "labels",
+              "value": "={{ $json.labels }}",
+              "type": "string"
+            },
+            {
+              "id": "3b09f851-0e08-487e-9277-b997fc5f21b2",
+              "name": "sender_mail",
+              "value": "={{ $json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "2aaeacde-217b-472f-ae69-40a7a32bebb2",
+              "name": "subject",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "d9ae0bc7-58e9-4c12-9cc1-d854ded22657",
+              "name": "email_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        -60
+      ],
+      "id": "214fe8eb-8ba9-4317-ba13-2b836532bdd5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        360,
+        160
+      ],
+      "id": "bef747cf-dd0a-49d8-9fc6-1cf3818e968c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "obBizBxc0YeyCRvz",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail_delete": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail_get",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail_get": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "33eecda4-5ad0-4f91-9dc9-1201d611d1cd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "21b9420dd846f0fbd18362b61d7f712595fb4c489557710468d0c79403ebdf05"
+  },
+  "id": "dxpAY4wD6gQozjQt",
+  "tags": []
+}
