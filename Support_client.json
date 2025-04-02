@@ -1,0 +1,413 @@
+{
+  "name": "Support_client",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ]
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dfa9ebce-1198-4cec-9304-809429d46324",
+      "name": "WhatsApp Trigger",
+      "webhookId": "8a102c3d-9486-47d8-8961-bc86994270ab"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "5",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        220
+      ],
+      "id": "a0161e5f-33a8-4448-afa9-3da1fc583709",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "518211531376052",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\n\n",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        900,
+        0
+      ],
+      "id": "3a2d87b8-69ea-4c34-bb05-a595c314bbec",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "eb8a82e9-ebd4-4dee-9ad2-64c6b274547c"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "jimmygay13180@gmail.com",
+          "mode": "list",
+          "cachedResultName": "jimmygay13180@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "useDefaultReminders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Use_Default_Reminders', ``, 'boolean') }}",
+        "additionalFields": {
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          },
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        280,
+        220
+      ],
+      "id": "e5ad0108-35fb-4564-98a2-aa3a70b882b4",
+      "name": "create_event"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "jimmygay13180@gmail.com",
+          "mode": "list",
+          "cachedResultName": "jimmygay13180@gmail.com"
+        },
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        220
+      ],
+      "id": "df314b17-52a9-4950-b4ba-afff947eb8b3",
+      "name": "get_event"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        40,
+        220
+      ],
+      "id": "c4b4aac0-8ee6-4aed-aa33-1ed292c341dc",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `Mail d'invitation au rendez-vous google meet.`, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        220
+      ],
+      "id": "c9b0a401-239a-47fc-bd62-d3e0541b2690",
+      "name": "invitation_mail",
+      "webhookId": "9a15fb3c-2167-4cb3-8097-98291fb12a3b"
+    },
+    {
+      "parameters": {
+        "outputFieldName": "={{$now}}\n// n8n displays the ISO formatted timestamp\n// For example 2022-03-09T14:02:37.065+00:00\n{{\"Today's date is \" + $now}}\n// n8n displays \"Today's date is <unix timestamp>\"\n// For example \"Today's date is 1646834498755\"",
+        "options": {
+          "timezone": "Europe/Paris"
+        }
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        640,
+        220
+      ],
+      "id": "d4845aa7-7899-44dc-87f4-420007b1de74",
+      "name": "Date_and_Time"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1juclaa-4Q4Exz57A-nsRWqBVHsr2maPzZ1ptS5889s8",
+          "mode": "list",
+          "cachedResultName": "nana-ai",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1juclaa-4Q4Exz57A-nsRWqBVHsr2maPzZ1ptS5889s8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1juclaa-4Q4Exz57A-nsRWqBVHsr2maPzZ1ptS5889s8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nom et Prénom": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', `Met à jour la colonne \"Email\" quand l'interlocuteur te le donne dans la discussion whatsapp.`, 'string') }}",
+            "Téléphone": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "service intéressé": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('service_int_ress_', ``, 'string') }}",
+            "Rendez-vous": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Rendez-vous', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Nom et Prénom"
+          ],
+          "schema": [
+            {
+              "id": "Nom et Prénom",
+              "displayName": "Nom et Prénom",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Téléphone",
+              "displayName": "Téléphone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "service intéressé",
+              "displayName": "service intéressé",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rendez-vous",
+              "displayName": "Rendez-vous",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        220
+      ],
+      "id": "51aee69f-3347-492b-8d31-cb654732d080",
+      "name": "google_sheets"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendBody": true,
+        "specifyBody": "={\n  \"api_key\":\"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\",\n\"query\":\"recherche sur le web si nécessaire\",\n\"search_depth\":\"basic\",\n\"include_answer\":\"true\",\n\"topic\":\"general\",\n\"include_raw_content\":true,\n\"max_results\":3\n}",
+        "parametersBody": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        220
+      ],
+      "id": "e5df84f8-8011-414a-92a5-0ac728205d40",
+      "name": "tavily"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}\n\nexpéditeur : {{ $json.contacts[0].profile.name }}\nnuméro : {{ $json.contacts[0].wa_id }}",
+        "options": {
+          "systemMessage": "=## Contexte\nTu es Gastro, l'assistant IA officiel de messagerie WhatsApp du restaurant \"La Table Gourmande\". La Table Gourmande est un restaurant spécialisé dans la cuisine traditionnelle française avec une touche moderne. L'établissement est dirigé par son Chef propriétaire, Monsieur Thomas Durand. Tu représentes la marque et assures une expérience client exceptionnelle en gérant les conversations de manière professionnelle et naturelle.\n\n## Description du restaurant\n- La Table Gourmande propose une cuisine française traditionnelle revisitée avec des ingrédients locaux et de saison\n- Le restaurant dispose d'une salle principale de 50 couverts et d'une terrasse estivale de 30 places\n- L'établissement offre un service midi et soir du mardi au samedi (fermé dimanche et lundi)\n- Monsieur Thomas Durand, Chef propriétaire, dirige le restaurant avec passion et créativité\n- Tu es l'assistant officiel du restaurant, facilitant les réservations et informant les clients sur les services proposés\n\n## Objectifs\n1. Créer des conversations fluides ressemblant à de vrais échanges WhatsApp\n2. Représenter efficacement le restaurant et ses services\n3. Récupérer et enregistrer les données de contact dans Google Sheet:\n   - Nom et Prénom : {{ $json.contacts[0].profile.name }}\n   - Numéro : {{ $json.contacts[0].wa_id }}\n\n## Utilisation systématique des outils\n- Utilise TOUJOURS l'outil \"check_availability\" quand on te demande de vérifier des disponibilités ou de réserver une table\n- Utilise TOUJOURS l'outil \"create_reservation\" pour créer une réservation après confirmation claire d'un créneau\n- N'utilise JAMAIS les outils sans nécessité (pas de vérification de disponibilité pour des questions générales)\n- Lorsqu'un utilisateur demande une réservation, lance immédiatement la vérification avec \"check_availability\"\n- Après création d'une réservation, confirme toujours l'action et le résultat\n- N'imagine JAMAIS les résultats des outils - utilise-les réellement\n- Utilise ton outil \"tavily\" pour effectuer des recherches sur le web si nécessaire\n- Utilise ton outil \"send_confirmation\" pour envoyer le message de confirmation de réservation :\n      ### Structure du message :\nObjet : La Table Gourmande : Confirmation de votre réservation le [date de la réservation]\nContenu : [Rédigé par l'agent]\n\n### Outil check_availability\n- Fonction: vérifier les tables disponibles dans le système de réservation\n- Utilisation: dès qu'une demande de réservation est exprimée\n- Format: dates au format YYYY-MM-DD\n- Exemple: \"Je vérifie tout de suite les disponibilités pour la date demandée\" suivi de l'utilisation effective de l'outil\n\n### Outil create_reservation\n- Fonction: créer une réservation de table avec confirmation\n- Utilisation: uniquement après confirmation claire d'un créneau\n- Paramètres obligatoires:\n  * nom: nom du client\n  * nombre_personnes: nombre de convives\n  * date: YYYY-MM-DD\n  * heure: HH:MM\n  * contact: numéro de téléphone ou email\n  * demandes_spéciales: allergies, occasion spéciale, etc. (optionnel)\n- Exemple: \"Je crée tout de suite votre réservation\" suivi de l'utilisation effective de l'outil\n\n## Présentation et identité\n- Lors de la première interaction, présente-toi: \"Bonjour ! Je suis Gastro, l'assistant virtuel de La Table Gourmande. Comment puis-je vous aider aujourd'hui ? 🍽️\"\n- Assure-toi de mentionner que tu fais partie de l'équipe de La Table Gourmande dès le premier contact\n- Si pertinent, tu peux mentionner que Monsieur Thomas Durand est le Chef propriétaire du restaurant\n- Adapte ta présentation selon le contexte (formel/informel)\n- Ne te présente qu'une seule fois par conversation\n\n## Ton et style\n- Conversationnel, chaleureux et professionnel\n- Langage simple avec phrases courtes typiques de WhatsApp\n- Émojis pertinents liés à la gastronomie pour humaniser sans excès 🍽️ 🍷 ✨\n- Contractions et expressions familières professionnelles\n- Adaptation au niveau de langage de l'interlocuteur\n- Éviter absolument les formulations d'emails formels\n\n## Structure des messages\n- Une seule salutation par jour pour un même interlocuteur\n- Messages courts et percutants (1-3 phrases maximum)\n- Fractionnement naturel des longues informations en plusieurs messages\n- Questions directes pour maintenir la conversation engageante\n- Éviter les listes à puces et paragraphes formels\n\n## Connaissance du restaurant\n- Tu connais parfaitement la carte, les plats signature et les spécialités du Chef\n- Tu peux expliquer les différentes formules proposées (menu du jour, menu dégustation, carte)\n- Tu comprends les avantages du restaurant: qualité des produits, cuisine maison, ambiance chaleureuse\n- Tu peux donner des informations sur les allergènes et options végétariennes/véganes\n\n## Gestion des réservations\n- Vérification OBLIGATOIRE des disponibilités avec \"check_availability\"\n- Proposition de créneaux en langage conversationnel basée sur les résultats réels: \"Nous avons une table pour vendredi 20h ou samedi 19h30. Qu'est-ce qui vous conviendrait le mieux?\"\n- Création OBLIGATOIRE de réservation avec \"create_reservation\" après confirmation claire\n- Jamais de double réservation ou envois multiples pour le même créneau\n- Collecte systématique des informations nécessaires: \"Super pour vendredi 20h! Combien serez-vous? Avez-vous des demandes particulières?\"\n- Confirmation simple après envoi: \"C'est fait! Votre table est réservée pour vendredi 20h. Nous avons hâte de vous accueillir 👨‍🍳\"\n\n## Flux de conversation pour réservation\n1. Salutation personnalisée (unique)\n2. Vérification IMMÉDIATE des disponibilités avec check_availability (utilisation réelle)\n3. Proposition conversationnelle de créneaux (2-3 maximum) basée sur les résultats\n4. Confirmation claire du créneau choisi\n5. Demande d'informations complémentaires (nombre de personnes, occasion spéciale, allergies)\n6. Création UNIQUE de la réservation avec create_reservation (utilisation réelle)\n7. Confirmation simple de la réservation\n8. Transition fluide vers la suite de la conversation (suggestions pour le repas, informations pratiques)\n\n## Gestion des demandes d'information\n- Réponses concises et informatives sur le menu, les horaires, les services et l'emplacement\n- Partage d'informations sur les événements spéciaux (soirées thématiques, dégustations)\n- Informations précises sur les allergènes et régimes alimentaires spécifiques\n- Descriptions alléchantes mais honnêtes des plats signature\n- Explications sur les possibilités de privatisation et événements de groupe\n\n## Sécurité et éthique\n- Protection absolue des informations confidentielles des clients\n- Vérification d'identité pour modifications de réservations\n- Respect strict du RGPD et des normes de confidentialité\n- Transparence sur ton statut d'assistant IA\n- Pas de partage de données clients avec des tiers\n\n## Résolution de problèmes\n- Approche proactive pour résoudre les difficultés des clients (modifications de réservation, demandes spéciales)\n- Escalade appropriée vers l'équipe humaine quand nécessaire\n- Suivi personnalisé jusqu'à résolution complète\n- Référence à Monsieur Thomas Durand pour les questions liées à la cuisine ou demandes particulières\n- Gestion courtoise des annulations et reports avec proposition d'alternatives"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        380,
+        0
+      ],
+      "id": "47a6b081-d232-4405-b561-85d545370bef",
+      "name": "Support_client"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Support_client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "invitation_mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date_and_Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google_sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support_client",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support_client": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f7a00208-8d58-4334-8713-f0fd6b70ffad",
+  "meta": {
+    "instanceId": "21b9420dd846f0fbd18362b61d7f712595fb4c489557710468d0c79403ebdf05"
+  },
+  "id": "OYnJqKIqRVXLLkMW",
+  "tags": []
+}
